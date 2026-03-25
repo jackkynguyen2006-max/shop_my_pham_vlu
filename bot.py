@@ -48,7 +48,7 @@ products = {
     ],
     "Da hỗn hợp": [
         ("Balance Clean 500k", 500, "⚖️ Cân bằng da"),
-        ("Mix Skin Foam 550k", 550, "🌗 Dùng cho vùng T"),
+        ("Mix Skin Foam 550k", 550, "🌗 Dùng cho vùng Thâm"),
         ("Dual Care 600k", 600, "💎 2 trong 1"),
         ("Combo Wash 650k", 650, "🧴 Chăm sóc toàn diện")
     ],
@@ -63,7 +63,7 @@ products = {
 # --- START ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "👋 Chào bạn!\n👉 Chọn loại da của bạn:",
+        "👋 Chào bạn! Shop sữa của hhai bot có thể giúp gì để chăm sóc cho da mặt của bạn hãy cho shop biết thêm nhé!\n👉 Chọn loại da của bạn:",
         reply_markup=skin_markup
     )
 
