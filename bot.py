@@ -2,7 +2,7 @@ import sqlite3
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-TOKEN = "8752531902:AAGTI9UOJogFlqmkuysXT_cRabWZ0ascEG8"
+TOKEN = "YOUR_TOKEN_HERE"
 
 # --- DATABASE ---
 def init_db():
@@ -32,31 +32,31 @@ main_menu = [
 ]
 main_markup = ReplyKeyboardMarkup(main_menu, resize_keyboard=True)
 
-# --- SẢN PHẨM (16 loại) ---
+# --- SẢN PHẨM + MÔ TẢ ---
 products = {
     "Da khô": [
-        ("Hydra Cleanser 100k", 100),
-        ("Moist Foam 150k", 150),
-        ("Aqua Wash 200k", 200),
-        ("Deep Hydrate 250k", 250)
+        ("Hydra Cleanser 100k", 100, "💧 Dưỡng ẩm sâu, da khô"),
+        ("Moist Foam 150k", 150, "🌿 Giữ ẩm, mềm da"),
+        ("Aqua Wash 200k", 200, "💦 Cấp nước nhanh"),
+        ("Deep Hydrate 250k", 250, "✨ Phục hồi da khô")
     ],
     "Da dầu": [
-        ("Oil Control 300k", 300),
-        ("Acne Clean 350k", 350),
-        ("Sebum Wash 400k", 400),
-        ("Pore Clean 450k", 450)
+        ("Oil Control 300k", 300, "🧼 Kiềm dầu mạnh"),
+        ("Acne Clean 350k", 350, "🔥 Giảm mụn"),
+        ("Sebum Wash 400k", 400, "💨 Làm sạch sâu"),
+        ("Pore Clean 450k", 450, "🫧 Se khít lỗ chân lông")
     ],
     "Da hỗn hợp": [
-        ("Balance Clean 500k", 500),
-        ("Mix Skin Foam 550k", 550),
-        ("Dual Care 600k", 600),
-        ("Combo Wash 650k", 650)
+        ("Balance Clean 500k", 500, "⚖️ Cân bằng da"),
+        ("Mix Skin Foam 550k", 550, "🌗 Dùng cho vùng T"),
+        ("Dual Care 600k", 600, "💎 2 trong 1"),
+        ("Combo Wash 650k", 650, "🧴 Chăm sóc toàn diện")
     ],
     "Da nhạy cảm": [
-        ("Gentle Skin 700k", 700),
-        ("Soft Clean 750k", 750),
-        ("Calm Wash 800k", 800),
-        ("Pure Foam 850k", 850)
+        ("Gentle Skin 700k", 700, "🌸 Dịu nhẹ, không kích ứng"),
+        ("Soft Clean 750k", 750, "🧴 An toàn da yếu"),
+        ("Calm Wash 800k", 800, "😌 Làm dịu da"),
+        ("Pure Foam 850k", 850, "🌱 Không hóa chất mạnh")
     ]
 }
 
@@ -79,7 +79,6 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if text in products:
         context.user_data["skin"] = text
 
-        # tạo menu sản phẩm
         product_buttons = [[p[0]] for p in products[text]]
         product_buttons.append(["🔙 Quay lại"])
         product_markup = ReplyKeyboardMarkup(product_buttons, resize_keyboard=True)
@@ -89,11 +88,20 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=product_markup
         )
 
-    # --- BƯỚC 2: CHỌN SẢN PHẨM ---
+    # --- BƯỚC 2: CHỌN SẢN PHẨM + HIỂN THỊ INFO ---
     elif any(text == p[0] for plist in products.values() for p in plist):
         context.user_data["product"] = text
+
+        for plist in products.values():
+            for p in plist:
+                if p[0] == text:
+                    name, price, desc = p
+
         await update.message.reply_text(
-            f"🧴 {text}\n👉 Gõ 'Thêm' để thêm vào giỏ"
+            f"🧴 {name}\n"
+            f"💰 Giá: {price}k\n"
+            f"📌 {desc}\n\n"
+            f"👉 Gõ 'Thêm' để thêm vào giỏ"
         )
 
     # --- THÊM GIỎ ---
@@ -101,17 +109,21 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
         product = context.user_data.get("product")
 
         if product:
-            # tìm giá
             for plist in products.values():
                 for p in plist:
                     if p[0] == product:
                         price = p[1]
 
-            cursor.execute("INSERT INTO cart (user, product, price) VALUES (?, ?, ?)",
-                           (user, product, price))
+            cursor.execute(
+                "INSERT INTO cart (user, product, price) VALUES (?, ?, ?)",
+                (user, product, price)
+            )
             conn.commit()
 
-            await update.message.reply_text("✅ Đã thêm vào giỏ!", reply_markup=main_markup)
+            await update.message.reply_text(
+                "✅ Đã thêm vào giỏ!",
+                reply_markup=main_markup
+            )
         else:
             await update.message.reply_text("⚠️ Chọn sản phẩm trước!")
 
@@ -155,17 +167,25 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if total:
             cursor.execute("DELETE FROM cart WHERE user=?", (user,))
             conn.commit()
-            await update.message.reply_text(f"🎉 Thanh toán thành công!\n💰 Tổng: {total}k")
+            await update.message.reply_text(
+                f"🎉 Thanh toán thành công!\n💰 Tổng: {total}k"
+            )
         else:
             await update.message.reply_text("Giỏ trống!")
 
     # --- QUAY LẠI ---
     elif text == "🔙 Quay lại":
-        await update.message.reply_text("👉 Chọn lại loại da:", reply_markup=skin_markup)
+        await update.message.reply_text(
+            "👉 Chọn lại loại da:",
+            reply_markup=skin_markup
+        )
 
     # --- CHỌN LẠI ---
     elif text == "🧴 Chọn lại loại da":
-        await update.message.reply_text("👉 Chọn loại da:", reply_markup=skin_markup)
+        await update.message.reply_text(
+            "👉 Chọn loại da:",
+            reply_markup=skin_markup
+        )
 
     else:
         await update.message.reply_text("👉 Hãy chọn bằng nút!")
@@ -177,5 +197,5 @@ app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle))
 
-print("🔥 Bot skincare PRO đang chạy...")
+print("🔥 Bot skincare PRO + INFO đang chạy...")
 app.run_polling()
