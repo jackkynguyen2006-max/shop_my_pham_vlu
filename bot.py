@@ -2,7 +2,7 @@ import sqlite3
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-TOKEN = "8752531902:AAGTI9UOJogFlqmkuysXT_cRabWZ0ascEG8"
+TOKEN = "8752531902:AAErY4WzvyJCaFhrAgMu80OvN60GDl-Nc8s"
 
 # --- DATABASE ---
 def init_db():
