@@ -84,7 +84,7 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
         product_markup = ReplyKeyboardMarkup(product_buttons, resize_keyboard=True)
 
         await update.message.reply_text(
-            f"✅ Bạn chọn {text}\n👉 Chọn sữa rửa mặt:",
+            f"✅ Bạn đã chọn {text}\n👉 Chọn sữa rửa mặt mà shop đề cử cho da của bạn nhé:",
             reply_markup=product_markup
         )
 
@@ -141,7 +141,7 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
             msg = "\n".join([f"{i+1}. {r[1]} - {r[2]}k" for i, r in enumerate(rows)])
 
             await update.message.reply_text(
-                f"🛒 Giỏ hàng:\n{msg}\n\n💰 Tổng: {total}k\n👉 Nhập số để hủy"
+                f"🛒 Giỏ hàng:\n{msg}\n\n💰 Tổng: {total}k\n👉 Nhập số để hủy sản phẩm tương ứng"
             )
 
     # --- HỦY ---
