@@ -179,3 +179,22 @@ app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle))
 
 print("🔥 Bot skincare PRO đang chạy...")
 app.run_polling()
+import threading
+from flask import Flask
+
+app_web = Flask(__name__)
+
+@app_web.route("/")
+def home():
+    return "Bot đang chạy!"
+
+def run_web():
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    app_web.run(host="0.0.0.0", port=port)
+
+# chạy flask song song
+threading.Thread(target=run_web).start()
+
+# bot chạy bình thường
+app.run_polling()
