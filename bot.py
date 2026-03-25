@@ -4,7 +4,7 @@ from flask import Flask, request
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-TOKEN = "YOUR_TOKEN_HERE"
+TOKEN = "8752531902:AAErY4WzvyJCaFhrAgMu80OvN60GDl-Nc8s"
 WEBHOOK_URL = "https://your-app-name.onrender.com"  # đổi thành link Render của bạn
 
 app_web = Flask(__name__)
